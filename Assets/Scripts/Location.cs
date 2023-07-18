@@ -28,6 +28,14 @@ public class Location : MonoBehaviour
   [ShowIf("locationType", LocationType.TimeTravel)]
   public Location locationToTravel;
 
+  #region Odin Inspector
+
+  public void UpdateColor(Color color)
+  {
+    GetComponent<SpriteRenderer>().color = color;
+  }
+
+  #endregion
 
   public void Init()
   {
@@ -72,7 +80,8 @@ public class Location : MonoBehaviour
 
   public void Freeze(PlayerManager _player)
   {
-
+    ParadogManager.Instance.SendMessageClientRpc($"Player activated an impulse location");
+    ParadogManager.Instance.MovePlayer(_player, locationsToMoveBack * -1, false);
   }
 
   public void TimeTravel(PlayerManager _player)

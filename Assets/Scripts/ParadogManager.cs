@@ -22,12 +22,6 @@ public struct PlayerData
   {
     remnantLocationIdx = _loc;
   }
-
-  public void SubstractPosition(int _pos)
-  {
-    // QUITAR ESTO
-    playerLocationIdx -= _pos;
-  }
 }
 
 [Serializable]
@@ -102,7 +96,7 @@ public class ParadogManager : NetworkBehaviour
   // Start is called before the first frame update
   void Start()
   {
-    if(Instance == null)
+    if (Instance == null)
     {
       Instance = this;
     }
@@ -124,7 +118,7 @@ public class ParadogManager : NetworkBehaviour
 
   private void OnClientConnected(ulong id)
   {
-    
+
     Logger.Log($"Connected client with id {id}");
   }
 
@@ -189,14 +183,14 @@ public class ParadogManager : NetworkBehaviour
     PlayerManager player = FindPlayerById(_playerId);
     int index = players.IndexOf(player);
 
-    if(index != turnId.Value)
+    if (index != turnId.Value)
     {
       SendMessageClientRpc($"Not your turn");
     }
 
     MovePlayer(player, dice);
 
-    if (turnId.Value +1 >= players.Count)
+    if (turnId.Value + 1 >= players.Count)
     {
       turnId.Value = 0;
     }
@@ -212,13 +206,16 @@ public class ParadogManager : NetworkBehaviour
 
     PlayerData newData = playersData[index];
 
+    int newLocPos = newData.playerLocationIdx + _locations;
     /// MODIFICAR ESTO PORQUE YA NO SE "SUMA" SINO QUE SE SETEA LA POS
-    newData.SetPlayerLocation(_locations);
+    
 
-    if (newData.playerLocationIdx >= BoardManager.Instance.locations.Count)
+    if (newLocPos >= BoardManager.Instance.locations.Count)
     {
-      newData.SubstractPosition(BoardManager.Instance.locations.Count);
+      newLocPos -= BoardManager.Instance.locations.Count;
     }
+
+    newData.SetPlayerLocation(newLocPos);
 
     Location loc = BoardManager.Instance.locations[newData.playerLocationIdx];
     _player.SetPositionClientRpc(loc.transform.position + Vector3.back);
