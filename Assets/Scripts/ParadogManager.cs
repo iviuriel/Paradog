@@ -218,7 +218,7 @@ public class ParadogManager : NetworkBehaviour
     newData.SetPlayerLocation(newLocPos);
 
     Location loc = BoardManager.Instance.locations[newData.playerLocationIdx];
-    _player.SetPositionClientRpc(loc.transform.position + Vector3.back);
+    _player.SetPlayerPositionClientRpc(loc.transform.position + Vector3.back);
     playersData[index] = newData;
 
     if (_activateNewLocation)
@@ -255,6 +255,17 @@ public class ParadogManager : NetworkBehaviour
     NetworkObject playerGo = NetworkManager.Singleton.ConnectedClients[_playerId].PlayerObject;
     PlayerManager player = playerGo.GetComponent<PlayerManager>();
     players.Add(player);
+    int index = players.IndexOf(player);
+
+    /// Set player color
+    Color pColor = playerColors[index];
+    Vector3 pColorVector = new Vector3(pColor.r, pColor.g, pColor.b);
+    player.SetPlayerColorServerRpc(pColorVector);
+
+    /// Set player color
+    Color rColor = remnantColors[index];
+    Vector3 rColorVector = new Vector3(rColor.r, rColor.g, rColor.b);
+    player.SetRemnantColorServerRpc(rColorVector);
 
     PlayerData data = new PlayerData()
     {
@@ -284,7 +295,7 @@ public class ParadogManager : NetworkBehaviour
     {
       PlayerData data = playersData[i];
       Vector3 pos = BoardManager.Instance.locations[data.playerLocationIdx].transform.position;
-      players[i].SetPositionClientRpc(pos + Vector3.back);
+      players[i].SetPlayerPositionClientRpc(pos + Vector3.back);
     }
   }
 
